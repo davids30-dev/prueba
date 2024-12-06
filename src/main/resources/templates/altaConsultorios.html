@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><!DOCTYPE html>
+        <html xmlns:th="http://www.thymeleaf.org">
+        <head>
+        <title>Alta Consultorios</title>
+</head>
+<body>
+
+<label>Numero de consultorio: </label>
+<input type="text" id="numConsultorio" name="numConsultorio">
+<br><br>
+<label>Piso:  </label>
+<input type="text" id="piso" name="piso">
+
+<button onclick="sendConsultorio()">Enviar</button>
+
+
+<p id="result"></p>
+</body>
+
+<script>
+    async function sendConsultorio() {
+        const numConsultorio = document.getElementById("numConsultorio").value;
+        const piso = document.getElementById("piso").value;
+
+
+        const response = await fetch('/api/altaConsultorio', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ numConsultorio: numConsultorio,
+             piso: piso})
+        });
+
+        console.log(response);
+        if (response.ok) {
+            const data = await response.json();
+            document.getElementById("result").innerText = data.message;
+        } else {
+            document.getElementById("result").innerText = "Error al enviar la solicitud.";
+        }
+    }
+</script>
+
+</html>
+
+</title>
+</head>
+<body>
+
+</body>
+</html>

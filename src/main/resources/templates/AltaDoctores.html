@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Alta doctores</title>
+</head>
+<body>
+
+<label>Nombre(s): </label>
+<input type="text" id="nombre" name="nombre">
+<br><br>
+<label>Apellido Paterno: </label>
+<input type="text" id="apellidoPaterno" name="apellidoPaterno">
+<br><br>
+<label>Apellido Materno: </label>
+<input type="text" id="apellidoMaterno" name="apellidoMaterno">
+<br><br>
+
+<button onclick="sendDoc()">Enviar</button>
+
+
+<p id="result"></p>
+</body>
+
+<script>
+  async function sendDoc() {
+      const nombre = document.getElementById("nombre").value;
+      const apellidoPaterno = document.getElementById("apellidoPaterno").value;
+      const apellidoMaterno = document.getElementById("apellidoMaterno").value;
+
+
+      const response = await fetch('/api/saveDoctores', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ nombre: nombre,
+           apellidoPaterno: apellidoPaterno,
+           apellidoMaterno: apellidoMaterno})
+      });
+
+      console.log(response);
+      if (response.ok) {
+          const data = await response.json();
+          document.getElementById("result").innerText = data.message;
+      } else {
+          document.getElementById("result").innerText = "Error al enviar la solicitud.";
+      }
+  }
+</script>
+
+</html>
+

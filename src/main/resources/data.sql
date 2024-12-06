@@ -1,0 +1,2 @@
+--INSERT INTO doctores (nombre, apellidoPaterno, apellidoMaterno)
+ --VALUES ('Ramón', 'Girón','Martínez');

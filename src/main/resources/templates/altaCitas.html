@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alta Citas</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+<label>Doctor: </label>
+<select id="doctores">
+    <option value="">Selecciona un Doctor</option>
+</select>
+<br><br>
+<select id="consultorio">
+    <option value="">Selecciona un consultorio</option>
+</select>
+<br><br>
+<label for="datetime">Selecciona una fecha y hora:</label>
+<input type="datetime-local" id="datetime" name="datetime">
+<br><br>
+<label>Nombre del paciente: </label>
+<input type="text" id="paciente" name="paciente">
+<br><br>
+<button onclick="sendCita()">Enviar</button>
+
+<p id="result"></p>
+
+<script>
+    // Función para llenar el ComboBox
+    $(document).ready(function() {
+        // Hacemos una solicitud GET al backend
+        $.ajax({
+            url: '/api/getDoctores',  // Ruta del backend que devuelve los datos
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                // Limpiamos el ComboBox antes de llenarlo
+                $('#doctores').empty();
+                $('#doctores').append('<option value="">Selecciona un doctor</option>');
+                console.log(data);
+
+                // Llenamos el ComboBox con los datos recibidos
+                $.each(data, function(id, nombreCompleto) {
+                    $('#doctores').append('<option value="' + id + '">' + nombreCompleto + '</option>');
+                });
+            },
+            error: function(error) {
+                console.error('Error al cargar los doctores:', error);
+            }
+        });
+        $.ajax({
+            url: '/api/getConsultorio',  // Ruta del backend que devuelve los datos
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                // Limpiamos el ComboBox antes de llenarlo
+                $('#consultorio').empty();
+                $('#consultorio').append('<option value="">Selecciona un consultorio</option>');
+                console.log(data);
+
+                // Llenamos el ComboBox con los datos recibidos
+                $.each(data, function(id, consultorio) {
+                    $('#consultorio').append('<option value="' + id + '">' + consultorio + '</option>');
+                });
+            },
+            error: function(error) {
+                console.error('Error al cargar los doctores:', error);
+            }
+        });
+    });
+
+    async function sendCita() {
+        const iddoctor = document.getElementById("doctores").value;
+        const idconsultorio = document.getElementById("consultorio").value;
+        const paciente = document.getElementById("paciente").value;
+        const horario = document.getElementById("datetime").value;
+
+
+        const response = await fetch('/api/altaCita', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ iddoctor: iddoctor,
+             idconsultorio: idconsultorio,
+             paciente: paciente,
+             horario, horario})
+        });
+
+        console.log(response);
+        if (response.ok) {
+            const data = await response.json();
+            document.getElementById("result").innerText = data.message;
+        } else {
+            document.getElementById("result").innerText = "Error al enviar la solicitud.";
+        }
+    }
+</script>
+
+</body>
+</html>
